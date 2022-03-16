@@ -1,0 +1,16 @@
+{% extends 'base_index.html' %}
+{% block content %}
+
+	<div class="card-title text-uppercase text-center py-3">
+		<a href="{% url 'register' %}">Register</a> |
+		<a href="{% url 'login' %}">Login</a>
+	</div>
+	
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+{% endblock%}

@@ -1,0 +1,219 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+
+<script type='text/javascript'>
+	function validation(){
+		var season=document.getElementById('season');
+		var factor=document.getElementById('factor');
+		var country=document.getElementById('country');
+		var state=document.getElementById('state');
+		var month=document.getElementById('month');
+
+		if(season.value.length == 0){
+			alert('Please select a season');
+			season.focus();
+			return false;
+		}else if(factor.value.length == 0){
+			alert('Please select a season factor');
+			factor.focus();
+			return false;
+		}else if(country.value.length == 0){
+			alert('Please select a country');
+			country.focus();
+			return false;
+		}else if(state.value.length == 0){
+			alert('Please select a state');
+			state.focus();
+			return false;
+		}else if(month.value.length == 0){
+			alert('Please select a month');
+			month.focus();
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+
+<script>
+	$(document).ready(function(){
+		$('#country').change(function(){
+			var cid=$('#country').val();
+			$.ajax({
+				url:"{% url 'getState' %}",
+				data:{'country':cid},
+				success:function(data){
+					$('#state').html(data);
+				}
+			})
+		})
+		$('#season').change(function(){
+			var season=$('#season').val();
+			$.ajax({
+				url:"{% url 'getSeasonFactor' %}",
+				data:{'sesn':season},
+				success:function(data){
+					$('#factor').html(data);
+				}
+			})
+		})
+		$('#month').change(function(){
+			var season=$('#season').val();
+			var factor=$('#factor').val();
+			var country=$('#country').val();
+			var state=$('#state').val();
+			var month=$('#month').val();
+
+			$.ajax({
+				url:"{% url 'checkSeasonCountry' %}",
+				data:{'season':season,factor:factor,country:country,state:state,month:month},
+				success:function(data){
+					if(data.valid == 'exist'){
+						alert('This data already exists for the current month');
+						$('#month').focus();
+					}
+				}
+			})
+		})
+	})
+</script>
+
+	<div class="card-title">Season-Country</div>
+        <hr>
+	<form method='post' action="{% url 'addSeasonCountryAction' %}">
+	{% csrf_token %}
+		<div class="form-group">
+            		<label for="season">Season</label>
+			<select class="form-control" id='season' name='season'>
+				<option value=''>--season--</option>
+				{% for s in season %}
+					<option value='{{s.id}}'>{{s.season}}</option>
+				{% endfor %}
+			</select>
+           	</div><div class="form-group">
+            		<label for="factor">factor</label>
+			<select class="form-control" id='factor' name='factor'>
+				<option value=''>--factor--</option>
+			</select>
+           	</div>
+		<div class="form-group">
+            		<label for="country">country</label>
+			<select class="form-control" id='country' name='country'>
+				<option value=''>--country--</option>
+				{% for c in country %}
+					<option value='{{c.id}}'>{{c.country}}</option>
+				{% endfor %}
+			</select>
+           	</div>
+		<div class="form-group">
+            		<label for="state">state</label>
+			<select class="form-control" id='state' name='state'>
+				<option value=''>--state--</option>
+			</select>
+           	</div>
+		<div class="form-group">
+            		<label for="month">month</label>
+			<select class="form-control" name='month' id='month'>
+				<option value=''>--Months--</option>
+				<option value='1'>January</option>
+				<option value='2'>February</option>
+				<option value='3'>March</option>
+				<option value='4'>April</option>
+				<option value='5'>May</option>
+				<option value='6'>June</option>
+				<option value='7'>July</option>
+				<option value='8'>August</option>
+				<option value='9'>September</option>
+				<option value='10'>October</option>
+				<option value='11'>November</option>
+				<option value='12'>December</option>
+			</select>
+           	</div>
+		<div class="form-group">
+            		<input type="submit" class="btn btn-light px-5" value='ADD' onclick='return validation()'>
+          	</div>
+	</form>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------>
+	
+		<!--<h3><u>Season-Country</u></h3>
+
+		<form method='post' action="{% url 'addSeasonCountryAction' %}">
+		{% csrf_token %}
+			<table>
+				<tr>
+					<td>Season:</td>
+					<td>
+						<select name='season' id='season'>
+							<option value=''>--season--</option>
+							{% for s in season %}
+								<option value='{{s.id}}'>{{s.season}}</season>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Season Factor:</td>
+					<td>
+						<select name='factor' id='factor'>
+							<option value=''>--factor--</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Country:</td>
+					<td>
+						<select name='country' id='country'>
+							<option value=''>--country--</option>
+							{% for c in country %}
+								<option value='{{c.id}}'>{{c.country}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>State:</td>
+					<td>
+						<select name='state' id='state'>
+							<option value=''>--state--</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Month:</td>
+					<td>
+					    <select name='month' id='month'>
+						<option value=''>--Months--</option>
+						<option value='1'>January</option>
+						<option value='2'>February</option>
+						<option value='3'>March</option>
+						<option value='4'>April</option>
+						<option value='5'>May</option>
+						<option value='6'>June</option>
+						<option value='7'>July</option>
+						<option value='8'>August</option>
+						<option value='9'>September</option>
+						<option value='10'>October</option>
+						<option value='11'>November</option>
+						<option value='12'>December</option>
+					    </select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='submit' value='ADD' onclick='return validation()' /></td>
+				</tr>
+			</table>
+		</form>-->
+	
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}

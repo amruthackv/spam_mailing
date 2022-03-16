@@ -1,0 +1,110 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+<script type='text/javascript'>
+	function validation(){
+		var minAge=document.getElementById('minAge');
+		var maxAge=document.getElementById('maxAge');
+		var factor=document.getElementById('factor');
+
+		if(minAge.value.length == 0){
+			alert('Enter minimum age');
+			minAge.focus();
+			return false;
+		}else if(minAge.value <= 0){
+			alert('Enter valid minimum age');
+			minAge.focus();
+			return false;
+		}else if(maxAge.value.length == 0){
+			alert('Enter maximum age');
+			maxAge.focus();
+			return false;
+		}else if(parseInt(maxAge.value) <= parseInt(minAge.value)){
+			alert('Enter valid maximum age');
+			maxAge.focus();
+			return false;
+		}else if(factor.value.length == 0){
+			alert('Enter Age Factor');
+			factor.focus();
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+<script>
+	$(document).ready(function(){
+		$('#factor').change(function(){
+			var minAge=$('#minAge').val();
+			var maxAge=$('#maxAge').val();
+			var factor=$('#factor').val();
+			$.ajax({
+				url:"{% url 'checkAgeFactor' %}",
+				data:{'minimmumAge':minAge,'maxAge':maxAge,'factor':factor},
+				success:function(data){
+					if(data.valid == 'exist'){
+						alert('Factor already exist for this age group');
+						$('#factor').val('');
+					}
+				}
+			})
+		})
+	})
+</script>
+
+	<div class="card-title">Age Factor</div>
+        <hr>
+	<form method='post' action="{% url 'addAgeFactorAction' %}">
+	{% csrf_token %}
+		<div class="form-group">
+            		<label for="minAge">Minimum Age</label>
+			<input type='number' class="form-control" id='minAge' name='minAge'>
+           	</div>
+		<div class="form-group">
+            		<label for="maxAge">Maximum Age</label>
+			<input type='number' class="form-control" id='maxAge' name='maxAge'>
+           	</div>
+		<div class="form-group">
+            		<label for="factor">Factor</label>
+			<input type='text' class="form-control" id='factor' name='factor'>
+           	</div>
+		<div class="form-group">
+            		<input type="submit" class="btn btn-light px-5" value='ADD' onclick='return validation()'>
+          	</div>
+	</form>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------>
+	
+		<!--<h3><u>Age Factor</u></h3>
+		<form method='post' action="{% url 'addAgeFactorAction' %}">
+		{% csrf_token %}
+			<table>
+				<tr>
+					<td>Minimum Age:</td>
+					<td><input type='number' name='minAge' id='minAge' /></td>
+				</tr>
+				<tr>
+					<td>Maximum Age:</td>
+					<td><input type='number' name='maxAge' id='maxAge' /></td>
+				</tr>
+				<tr>
+					<td>Age Factor:</td>
+					<td><input type='text' name='factor' id='factor' /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='submit' value='ADD' onclick='return validation()' /></td>
+				</tr>
+			</table>
+		</form>-->
+	
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}

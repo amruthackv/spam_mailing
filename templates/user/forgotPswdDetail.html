@@ -1,0 +1,147 @@
+{% extends 'base_register.html' %}
+{% block content %}
+
+<script type='text/javascript'>
+	function validation(){
+		var phn=/\d{10}/;
+		
+		var dob=document.getElementById('dob');
+		var country=document.getElementById('country');
+		var phone=document.getElementById('phone');
+		var secQstn=document.getElementById('secQstn');
+		var secAns=document.getElementById('secAns');
+		
+		if(dob.value.length == 0){
+			alert('Please Enter Your Date of Birth');
+			dob.focus();
+			return false;
+		}else if(country.value.length == 0){
+			alert('Please Select Your Country');
+			country.focus();
+			return false;
+		}else if(phone.value.length == 0){
+			alert('Please Enter Your Phone Number');
+			phone.focus();
+			return false;
+		}else if(!phone.value.match(phn)){
+			alert('Please Enter Valid Phone Number');
+			phone.focus();
+			return false;
+		}else if(secQstn.value.length == 0){
+			alert('Please Select Your Security Question');
+			secQstn.focus();
+			return false;
+		}else if(secAns.value.length == 0){
+			alert('Please Enter Your Security Answer');
+			secAns.focus();
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+
+	<div class="card-title text-uppercase text-center py-3">Forgot Password</div>
+	<form method='post' action="{% url 'forgotPswdDetailAction' %}">
+	{% csrf_token %}
+		{% for v1 in data1 %}
+			<input type='hidden' name='username' value='{{v1.username}}' />
+		{% endfor %}
+		<div class="form-group">
+			<label for="dob" class="sr-only">Date Of Birth</label>
+			<div class="position-relative has-icon-right">
+				<input type='date' id='dob' name='dob' class="form-control input-shadow" placeholder="Enter Your Date Of Birth" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="country" class="sr-only">Country</label>
+			<div class="position-relative has-icon-right">
+				<select name='country' id='country' class="form-control input-shadow">
+					<option value=''>--country--</option>
+					{% for v in data2 %}
+						<option value='{{v.id}}'>{{v.country}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>	
+		<div class="form-group">
+			<label for="phone" class="sr-only">Phone</label>
+			<div class="position-relative has-icon-right">
+				<input type='text' id='phone' name='phone' class="form-control input-shadow" placeholder="Enter Your Phone Number" />
+			</div>
+		</div>
+		<div class="form-group security">
+			<label for="secQstn" class="sr-only">Security Question</label>
+			<div class="position-relative has-icon-right">
+				<select name='secQstn' id='secQstn' class="form-control input-shadow">
+					<option value="">--Select a Security Question--</option>
+					<option value="What is your pet's name?">What is your pet's name?</option>
+					<option value="What is your favourite color?">What is your favourite color?</option>
+					<option value="What is your favourite subject?">What is your favourite subject?</option>
+					<option value="What is your English teacher's name?">What is your English teacher's name?</option>
+				</select>
+			</div>
+		</div>	
+		<div class="form-group security">
+			<label for="secAns" class="sr-only">Security Answer</label>
+			<div class="position-relative has-icon-right">
+				<input type='text' id='secAns' name='secAns' class="form-control input-shadow" placeholder="Enter Your Security Answer" />
+			</div>
+		</div>		
+		<input type='submit' class='submitButton btn btn-light btn-block waves-effect waves-light' value='Submit' onclick='return validation()' />		  
+	</form>
+	<div class="card-footer text-center py-3">
+		<p class="text-warning mb-0">Do not have an account? <a href="{% url 'register' %}"> Sign Up here</a></p>
+		<p class="mb-0">Already have an account? <a href="{% url 'register' %}" class="text-warning"> Sign In here</a></p>
+	</div>
+<!--------------------------------------------------------------------------------------------------------------------->
+	
+		<!--<form method='post' action="{% url 'forgotPswdDetailAction' %}">
+		{% csrf_token %}
+			{% for v1 in data1 %}
+				<input type='hidden' name='username' value='{{v1.username}}' />
+			{% endfor %}
+			<table>
+				<tr>
+					<td>DOB:</td>
+					<td><input type='date' name='dob' id='dob' /></td>
+				</tr>
+				<tr>
+					<td>Country:</td>
+					<td>
+						<select name='country' id='country'>
+							<option value=''>--country--</option>
+							{% for v in data2 %}
+								<option value='{{v.id}}'>{{v.country}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Phone No.:</td>
+					<td><input type='text' name='phone' id='phone' /></td>
+				</tr>
+				<tr>
+					<td>Security Question:</td>
+					<td>
+						<select name='secQstn' id='secQstn'>
+							<option value="">--select a question--</option>
+							<option value="What is your pet's name?">What is your pet's name?</option>
+							<option value="What is your favourite color?">What is your favourite color?</option>
+							<option value="What is your favourite subject?">What is your favourite subject?</option>
+							<option value="What is your English teacher's name?">What is your English teacher's name?</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Security Answer:</td>
+					<td><input type='text' name='secAns' id='secAns' /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='submit' value='SUBMIT' onclick='return validation()' /></td>
+				</tr>
+			</table>
+		</form>-->
+
+{% endblock %}

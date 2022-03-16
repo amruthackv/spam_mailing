@@ -1,0 +1,48 @@
+<html>
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+<script>
+	$(document).ready(function(){
+		/*$('#hobby').change(function(){
+			var hobby=$('#hobby').val();
+			$.ajax({
+				url:"{% url 'getHobbyFactor' %}",
+				data:{'hobby':hobby},
+				success:function(data){
+					console.log(data);
+					$('#factor').html(data);
+				}
+			})
+		})*/
+	})
+</script>
+	<body>
+		<h3><u>Customer Hobby Factor</u></h3>
+		<form>
+			<table>
+				<tr>
+					<td>Hobby:</td>
+					<td>
+						<select id='hobby' name='hobby'>
+							<option value=''>--hobby--</option>
+							{% for h in hobby%}
+								<option value='{{h.id}}'>{{h.hobbyid.hobby}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Factor:</td>
+					<td>
+						<select name='factor' id='factor'>
+							<option value=''>--factor--</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='button' value='ADD' onclick='return validation()' /></td>
+				</tr>
+			</table>
+		</form>
+	</body>
+</html>

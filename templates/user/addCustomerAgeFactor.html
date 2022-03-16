@@ -1,0 +1,65 @@
+{% extends 'base_forms.html' %}
+{% block content %}
+
+<script type='text/javascript'>
+	function validation(){
+		var factor=document.getElementById('factor');
+		if(factor.value.length == 0){
+			alert('Please Select an Age Factor');
+			factor.focus();
+			return false;
+		}
+	}
+</script>
+
+	<div class="card-title">User Age Factors</div>
+        <hr>
+	<form method='post' action="{% url 'addCustomerAgeFactorAction' %}">
+	{% csrf_token %}
+		<div class="form-group">
+            		<label for="factor">Age Factor</label>
+			<select class="form-control" id='factor' name='factor'>
+				<option value=''>--factor--</option>
+				{% for v in data %}
+					<option value='{{v.id}}'>{{v.factor}}</option>
+				{% endfor %}
+			</select>
+           	</div>
+		<div class="form-group">
+            		<input type="submit" class="btn btn-light px-5" value='ADD' onclick='return validation()'>
+          	</div>
+	</form>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------>
+	
+		<!--<h3><u>Add Age Factor</u></h3>
+		<form method='post' action="{% url 'addCustomerAgeFactorAction' %}">
+		{% csrf_token %}
+			<table>
+				<tr>
+					<td>Age Factor:</td>
+					<td>
+						<select id='factor' name='factor'>
+							<option value=''>--age factor--</option>
+							{% for v in data %}
+								<option value='{{v.id}}'>{{v.factor}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='submit' value='ADD' onclick='return validation()' /></td>
+				</tr>		
+			</table>
+		</form>-->
+	
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}

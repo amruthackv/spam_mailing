@@ -1,0 +1,112 @@
+{% extends 'base_forms.html' %}
+{% block content %}
+
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+
+<script type='text/javascript'>
+	function validation(){
+		var uname=/^[a-zA-Z0-9\s._@]+$/;
+		var blackedid=document.getElementById('blackedid');
+		var name=document.getElementById('name');
+		var remarks=document.getElementById('remarks');
+
+		if(blackedid.value.length == 0){
+			alert('Please Enter Id to be blacklisted');
+			blackedid.focus();
+			return false;
+		}else if(!blackedid.value.match(uname)){
+			alert('Please Enter a Valid Id');
+			blackedid.focus();
+			return false;
+		}else if(name.value.length == 0){
+			alert('Please Enter Name');
+			name.focus();
+			return false;
+		}else if(remarks.value.length == 0){
+			alert('Please Enter Remarks');
+			remarks.focus();
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+<script>
+	$(document).ready(function(){
+		$('#blackedid').change(function(){
+			var cid=$('#blackedid').val();
+			$.ajax({
+				url:"{% url 'checkBlackedId' %}",
+				data:{'blacked':cid},
+				success:function(data){
+					if(data.valid != 'valid'){
+						if(data.valid == 'exist'){
+							alert('This Id already added to blacklist');
+						}else{
+							alert('Enter a valid id');
+						}
+						$('#blackedid').val('');
+						$('#blackedid').focus();
+					}
+				}
+			})
+		})
+	})
+</script>
+
+	<div class="card-title">Add to Blacklist</div>
+        <hr>
+	<form method='post' action="{% url 'addToBlacklistAction' %}">
+	{% csrf_token %}
+		<div class="form-group">
+            		<label for="blackedid">Contact Id</label>
+            		<input type="text" class="form-control" name='blackedid' id='blackedid' placeholder="Enter Contact Id">
+           	</div>
+           	<div class="form-group">
+            		<label for="name">Name</label>
+            		<input type="text" class="form-control" name='name' id="name" placeholder="Enter Name">
+           	</div>
+           	<div class="form-group">
+            		<label for="remarks">Remarks</label>
+            		<textarea class="form-control" id="remarks" name="remarks" rows='6' placeholder="Enter Your Remarks"></textarea>
+           	</div>
+		<div class="form-group">
+            		<input type="submit" class="btn btn-light px-5" value='ADD' onclick='return validation()'>
+          	</div>
+	</form>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------->
+	
+		<!--<h3><u>Add to Blacklist</u></h3>
+		<form method='post' action="{% url 'addToBlacklistAction' %}">
+		{% csrf_token %}
+			<table>
+				<tr>
+					<td>Contact Id:</td>
+					<td><input type='text' name='blackedid' id='blackedid' required /></td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td><input type='text' name='name' id='name' required /></td>
+				</tr>
+				<tr>
+					<td>Remarks:</td>
+					<td><textarea name='remarks' id='remarks' rows='4' cols='21' required></textarea></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='submit' value='ADD' onclick='return validation()' /></td>
+				</tr>
+			</table>
+		</form>
+		<a href="{% url 'userHome' %}">Home</a>-->
+	
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}

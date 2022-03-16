@@ -1,0 +1,27 @@
+{% extends 'base_forms.html' %}
+{% block content %}
+
+		<div class="card-title">Welcome {% if data %}{% for v in data %}{{v.name}}{% endfor %}{% endif %}</div>
+		<!--<li><a href="{% url 'composeMessage' %}">Compose Message</a></li>
+		<li><a href="{% url 'viewSentItems' %}">View Sent Items</a></li>
+		<li><a href="{% url 'inbox' %}">Inbox</a></li>
+		<li><a href="{% url 'viewSpam' %}">View Spam</a></li>
+		<li><a href="{% url 'viewTrash' %}">View Trash</a></li>
+		<li><a href="{% url 'addContact' %}">Add Contact</a></li>
+		<li><a href="{% url 'addToBlacklist' %}">Add to Blacklist</a></li>
+		<li><a href="{% url 'viewContacts' %}">View Contacts</a></li>
+		<li><a href="{% url 'viewBlacklist' %}">View Blacklist</a></li>
+		<li><a href="{% url 'addCustomerHobbyFactor' %}">Add Hobby Factor</a></li>
+		<li><a href="{% url 'addCustomerAgeFactor' %}">Add Age Factor</a></li>
+		<li><a href="{% url 'addCustomerSeasonFactor' %}">Add Season Factor</a></li>
+		<li><a href="{% url 'editProfile' %}">Edit Profile</a></li>
+		<li><a href="{% url 'logout' %}">Logout</a></li>-->
+	
+	{% if messages %}
+		{%for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+{% endblock %}

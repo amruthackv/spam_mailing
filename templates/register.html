@@ -1,0 +1,336 @@
+{% extends 'base_register.html' %}
+{% block content %}
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+
+<script type='text/javascript'>
+	function validation(){
+		var fullname=/^[a-zA-Z -.]+$/;
+		var phn=/^[0-9]{10}$/;
+		var uname=/^[a-zA-Z0-9 ._]+$/;
+		var pswd=/^(?=.*\d)(?=.*[!@#$%^&*_])(?=.*[A-Z])(?=.*[a-z]).{6,16}$/;
+
+		var name=document.getElementById('name');
+		var dob=document.getElementById('dob');
+		var gender=document.registrationForm.gender;
+		var address=document.getElementById('address');
+		var country=document.getElementById('country');
+		var state=document.getElementById('state');
+		var phone=document.getElementById('phone');
+		var username=document.getElementById('username');
+		var password=document.getElementById('password');
+		var secQstn=document.getElementById('secQstn');
+		var secAnswr=document.getElementById('secAnswr');
+		var chooseHobby=document.registrationForm.chooseHobby;
+
+		var flag=0;
+		for(var i=0;i<chooseHobby.length;i++){
+			if(chooseHobby[i].checked == true){
+				flag=1;
+			}
+		}
+
+
+		if(name.value.length == 0){
+			alert('Please Enter Your Name');
+			name.focus();
+			return false;
+		}else if(!name.value.match(fullname)){
+			alert('Please Enter a valid Name');
+			name.focus();
+			return false;
+		}else if(dob.value.length == 0){
+			alert('Please Enter our Date of Birth');
+			dob.focus();
+			return false;
+		}else if(gender[0].checked == false && gender[1].checked == false){
+			alert('Please Select Your Gender');
+			return false;
+		}else if(address.value.length == 0){
+			alert('Please Enter Your Address');
+			address.focus();
+			return false;
+		}else if(country.value.length == 0){
+			alert('Please Select Your Country');
+			country.focus();
+			return false;
+		}else if(state.value.length == 0){
+			alert('Please Select Your State');
+			state.focus();
+			return false;
+		}else if(phone.value.length == 0){
+			alert('Please Enter Your phone');
+			phone.focus();
+			return false;
+		}else if(!phone.value.match(phn)){
+			alert('Please Enter Valid Phone');
+			phone.focus();
+			return false;
+		}else if(username.value.length == 0){
+			alert('Please Enter Your Username');
+			username.focus();
+			return false;
+		}else if(!username.value.match(uname)){
+			alert('Please Enter Valid Username');
+			username.focus();
+			return false;
+		}else if(password.value.length == 0){
+			alert('Please Enter Your Password');
+			password.focus();
+			return false;
+		}else if(!password.value.match(pswd)){
+			alert('Please Enter Valid Password');
+			password.focus();
+			return false;
+		}else if(secQstn.value.length == 0){
+			alert('Select a security question');
+			secQstn.focus();
+			return false;
+		}else if(secAnswr.value.length == 0){
+			alert('Please Enter Your Answer');
+			secAnswr.focus();
+			return false;
+		}else if(flag == 0){
+			alert('Select atleast one option');
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+
+<script>
+	$(document).ready(function(){
+		$('#country').change(function(){
+			var cid=$('#country').val();
+			$.ajax({
+				url:"{% url 'getState' %}",
+				data:{'country':cid},
+				success:function(data){
+					$('#state').html(data);
+				}
+			})
+		})
+		$('#username').change(function(){
+			var username=$('#username').val();
+			console.log(username);
+			$.ajax({
+				url:"{% url 'checkUsername' %}",
+				data:{'username':username},
+				success:function(data){
+					if(data.valid == 'exist'){
+						alert('Username Already Exists!!!');
+						$('#username').val('');
+					}
+				}
+			})
+		})
+	})
+</script>
+	<form name='registrationForm' method='post' action="{% url 'registerAction' %}">
+	{% csrf_token %}
+		<div class="form-group">
+			<label for="name" class="sr-only">Name</label>
+			<div class="position-relative has-icon-right">
+				<input type="text" id="name" name='name' class="form-control input-shadow" placeholder="Enter Your Name" {% if data2 %}{% for v2 in data2 %} value='{{v2.name}}' {% endfor %}{% endif%} >
+				<div class="form-control-position">
+					<i class="icon-user"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="dob" class="sr-only">Name</label>
+			<div class="position-relative has-icon-right">
+				<input type="date" id="dob" name='dob' class="form-control input-shadow" placeholder="Enter Your Date of Birth" {% if data2 %}{% for v2 in data2 %} value='{{v2.dob}}' {% endfor %}{% endif%} >
+				<div class="form-control-position">
+					<i class="zmdi zmdi-account-calendar"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="gender" class="">Gender</label>
+			<div class="position-relative has-icon-right" style="display:inline">
+				<input type="radio" id="" name='gender' value='male' class="" {% if data2 %}{% for v2 in data2 %}{% if v2.gender == 'male' %} checked='true' {% endif %}{% endfor %}{% endif %} ><label>Male</label>
+				<input type="radio" id="" name='gender' value='female' class="" {% if data2 %}{% for v2 in data2 %}{% if v2.gender == 'female' %} checked='true' {% endif %}{% endfor %}{% endif %} ><label>Female</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="address" class="sr-only">Address</label>
+			<div class="position-relative has-icon-right">
+				<textarea id="address" name='address' class="form-control input-shadow" placeholder="Enter Your Address" rows='5'>{% if data2 %}{% for v2 in data2 %}{{v2.address}}{% endfor %}{% endif%}</textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="country" class="sr-only">Country</label>
+			<div class="position-relative has-icon-right">
+				<select name='country' id='country' class="form-control input-shadow">
+					{% if data2 %}{% else %}<option value=''>--country--</option>{% endif %}
+					{% for v1 in data1 %}
+						<option value='{{v1.id}}' {% if data2 %}{% for v2 in data2 %}{% if v2.countryid.id == v1.id %} selected='true' {% endif %}{% endfor %}{% endif %}>{{v1.country}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="state" class="sr-only">state</label>
+			<div class="position-relative has-icon-right">
+				<select name='state' id='state' class="form-control input-shadow">
+					{% if data2 %}{% else %}<option value=''>--state--</option>{% endif %}
+					{% for s in states %}
+						<option value='{{s.id}}' {% if data2 %}{% for v2 in data2 %}{% if v2.stateid.id == s.id %} selected='true' {% endif %}{% endfor %}{% endif %}>{{s.state}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="phone" class="sr-only">phone</label>
+			<div class="position-relative has-icon-right">
+				<input type="text" id="phone" name='phone' class="form-control input-shadow" placeholder="Enter Your Phone" {% if data2 %}{% for v2 in data2 %} value='{{v2.phone}}' {% endfor %}{% endif%} >
+				<div class="form-control-position">
+					<i class="zmdi zmdi-account-box-phone"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="username" class="sr-only">Username</label>
+			<div class="position-relative has-icon-right">
+				<input type='text' id='username' name='username' class="form-control input-shadow" placeholder="Enter Your Userame" {% if uname %} value='{{uname}}' {% endif%} />@mymail.com
+				<div class="form-control-position">
+					<i class="icon-user"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="password" class="sr-only">Password</label>
+			<div class="position-relative has-icon-right">
+				<input type="password" id="password" name='password' class="form-control input-shadow" placeholder="Enter Your Password" {% if data2 %}{% for v2 in data2 %} value='{{v2.password}}' {% endfor %}{% endif%} >
+				<div class="form-control-position">
+					<i class="icon-lock"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group security">
+			<label for="secQstn" class="sr-only">Security Question</label>
+			<div class="position-relative has-icon-right">
+				<select name='secQstn' id='secQstn' class="form-control input-shadow">
+					{% if data2 %}
+						{% for v2 in data2 %}
+							<option value="{{v2.security_question}}">{{v2.security_question}}</option>
+						{% endfor %}
+					{% else %}
+						<option value="">--select a question--</option>
+					{% endif %}
+					<option value="What is your pet's name?">What is your pet's name?</option>
+					<option value="What is your favourite color?">What is your favourite color?</option>
+					<option value="What is your favourite subject?">What is your favourite subject?</option>
+					<option value="What is your English teacher's name?">What is your English teacher's name?</option>
+				</select>
+			</div>
+		</div>	
+		<div class="form-group security">
+			<label for="secAnswr" class="sr-only">Security Answer</label>
+			<div class="position-relative has-icon-right">
+				<input type='text' id='secAnswr' name='secAnswr' class="form-control input-shadow" placeholder="Enter Your Security Answer" {% if data2 %}{% for v2 in data2 %}value='{{v2.security_answer}}' {% endfor %}{% endif%} />
+			</div>
+		</div>	
+		<input type='submit' name='submitButton' class='submitButton btn btn-light btn-block waves-effect waves-light' {% if data2 %} value='Update' {% else %} value='Register' {% endif %} onclick='return validation()' />		
+	</form>
+	{% if data2 %}<a href="{% url 'userHome' %}">BackTo Home</a>{% endif %}
+	
+<!--------------------------------------------------------------------------------------------------------------------------------------------->
+		<!--<form name='registrationForm' method='post' action="{% url 'registerAction' %}">
+		{% csrf_token %}
+			<table>
+				<tr>
+					<td>Name:</td>
+					<td><input type='text' name='name' id='name' {% if data2 %}{% for v2 in data2 %} value='{{v2.name}}' {% endfor %}{% endif%} /></td>
+				</tr>
+				<tr>
+					<td>DOB:</td>
+					<td><input type='date' name='dob' id='dob' {% if data2 %}{% for v2 in data2 %} value='{{v2.dob}}' {% endfor %}{% endif%} /></td>
+				</tr>
+				<tr>
+					<td>Gender:</td>
+					<td>
+						<input type='radio' name='gender' value='male' {% if data2 %}{% for v2 in data2 %}{% if v2.gender == 'male' %} checked='true' {% endif %}{% endfor %}{% endif %} />Male
+						<input type='radio' name='gender' value='female' {% if data2 %}{% for v2 in data2 %}{% if v2.gender == 'female' %} checked='true' {% endif %}{% endfor %}{% endif %} />Female
+					</td>
+				</tr>
+				<tr>
+					<td>Address:</td>
+					<td><textarea name='address' id='address' rows='4' cols='24'>{% if data2 %}{% for v2 in data2 %}{{v2.address}}{% endfor %}{% endif%}</textarea></td>
+					
+				</tr>
+				<tr>
+					<td>Country:</td>
+					<td>
+						<select name='country' id='country'>
+							{% if data2 %}{% else %}<option value=''>--country--</option>{% endif %}
+							{% for v1 in data1 %}
+								<option value='{{v1.id}}' {% if data2 %}{% for v2 in data2 %}{% if v2.countryid.id == v1.id %} selected='true' {% endif %}{% endfor %}{% endif %}>{{v1.country}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>State:</td>
+					<td>
+						<select name='state' id='state'>
+							{% if data2 %}{% else %}<option value=''>--state--</option>{% endif %}
+							{% for s in states %}
+								<option value='{{s.id}}' {% if data2 %}{% for v2 in data2 %}{% if v2.stateid.id == s.id %} selected='true' {% endif %}{% endfor %}{% endif %}>{{s.state}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Phone:</td>
+					<td><input type='text' name='phone' id='phone' {% if data2 %}{% for v2 in data2 %} value='{{v2.phone}}' {% endfor %}{% endif%} /></td>
+				</tr>
+				<tr>
+					<td>Username:</td>
+					<td><input type='text' name='username' id='username' {% if uname %} value='{{uname}}' {% endif%} >@mymail.com</td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><input type='password' name='password' id='password' {% if data2 %}{% for v2 in data2 %} value='{{v2.password}}' {% endfor %}{% endif%} /></td>
+				</tr>
+				<tr>
+					<td>Security Question:</td>
+					<td>
+						<select name='secQstn' id='secQstn'>
+							{% if data2 %}
+								{% for v2 in data2 %}
+									<option value="{{v2.security_question}}">{{v2.security_question}}</option>
+								{% endfor %}
+							{% else %}
+								<option value="">--select a question--</option>
+							{% endif %}
+							<option value="What is your pet's name?">What is your pet's name?</option>
+							<option value="What is your favourite color?">What is your favourite color?</option>
+							<option value="What is your favourite subject?">What is your favourite subject?</option>
+							<option value="What is your English teacher's name?">What is your English teacher's name?</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Security Answer:</td>
+					<td><input type='text' name='secAnswr' id='secAnswr' {% if data2 %}{% for v2 in data2 %}value='{{v2.security_answer}}' {% endfor %}{% endif%} /></td>	
+				</tr>
+				<tr>
+					<td>Hobbies:</td>
+					<td>
+						{% for v3 in data3 %}
+							<input type='checkbox' name='chooseHobby' value='{{v3.id}}' {% if userHobby %}{% for h in userHobby %}{% if h.hobbyid.id == v3.id %} checked='true' {% endif %}{% endfor %}{% endif %} />{{v3.hobby}}
+						{% endfor %}
+						<input type='checkbox' name='chooseHobby' value='none' {% if userHobby %}{% else %}{% if data2 %} checked='true' {% endif %}{% endif %} />None
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type='submit' {% if data2 %} value='Update' {% else %} value='Register' {% endif %} name='submitButton' onclick='return validation()' />
+					</td>
+				</tr>
+			</table>
+		</form>-->
+{% endblock %}

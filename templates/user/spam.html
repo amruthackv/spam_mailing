@@ -1,0 +1,34 @@
+<html>
+	<body>
+		<h3><u>Spam</u></h3>
+		<table>
+			<tr>
+				<th>Sender</th>
+				<th>Subject</th>
+				<th>Message</th>
+				<th>Date</th>
+				<th>Time</th>
+				<th></th>
+				<th></th>
+			</tr>
+			{% for v in data %}
+			    <tr>
+				<td>{{v.senderid.username}}</td>
+				<td>{{v.subject}}</td>
+				<td>{{v.message}}</td>
+				<td>{{v.date}}</td>
+				<td>{{v.time}}</td>
+				<td><a href="{% url 'deleteSpam' v.id %}">Delete</a></td>
+				<td><a href="{% url 'removeFromSpam' v.id %}">Remove From Spam</a></td>
+			    </tr>
+			{% endfor %}
+		</table>
+	</body>
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor%}
+	{% endif %}
+</html>

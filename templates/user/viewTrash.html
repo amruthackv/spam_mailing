@@ -1,0 +1,62 @@
+{% extends 'base_forms.html' %}
+{% block content %}
+
+
+	<h5 class="card-title">Trash</h5>
+	<div class="table-responsive">
+		<table class="table table-hover">
+                	<thead>
+                  		<tr>
+                    			<th scope="col">Sender</th>
+                    			<th scope="col">Subject</th>
+                    			<th scope="col">Message</th>
+                    			<th scope="col">Date</th>
+                    			<th scope="col">Time</th>
+                    			<th scope="col"></th>
+                  		</tr>
+                	</thead>
+                	<tbody>
+                  		{% for v in data %}
+					<tr>
+						<td>{{v.messageid.senderid.username}}</td>
+						<td>{{v.messageid.subject}}</td>
+						<td>{{v.messageid.message}}</td>
+						<td>{{v.date}}</td>
+						<td>{{v.time}}</td>
+						<td><a href="{% url 'deleteFromTrash' v.messageid.id %}">Delete</a></td>
+					</tr>
+				{% endfor %}
+                	</tbody>
+		</table>
+	</div>
+
+<!----------------------------------------------------------------------------------------------->
+		<!--<h3><u>View Trash</u></h3>
+		<table>
+			<tr>
+				<th>Sender</th>
+				<th>Subject</th>
+				<th>Message</th>
+				<th>Date</th>
+				<th>Time</th>
+				<th></th>
+			</tr>
+			{% for v in data %}
+				<tr>
+					<td>{{v.messageid.senderid.username}}</td>
+					<td>{{v.messageid.subject}}</td>
+					<td>{{v.messageid.message}}</td>
+					<td>{{v.date}}</td>
+					<td>{{v.time}}</td>
+					<td><a href="{% url 'deleteFromTrash' v.messageid.id %}">Delete</a></td>
+				</tr>
+			{% endfor %}
+		</table>-->
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>		
+		{% endfor %}
+	{% endif %}
+{% endblock %}

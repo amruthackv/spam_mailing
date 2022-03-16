@@ -1,0 +1,99 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+<script type='text/javascript'>
+	function validation(){
+		var hobby=document.getElementById('hobby');
+		var factor=document.getElementById('factor');
+		
+		if(hobby.value.length == 0){
+			alert('Please Select a Hobby');
+			hobby.focus();
+			return false;
+		}else if(factor.value.length == 0){
+			alert('Please Enter a Factor');
+			factor.focus();
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+<script type='text/javascript'>
+	$(document).ready(function(){
+	    $('#factor').change(function(){
+		var hobby=$('#hobby').val();
+		var factor=$('#factor').val();
+		$.ajax({
+			url:"{% url 'checkHobbyFactor' %}",
+			data:{'hobby':hobby,'factor':factor},
+			success:function(data){
+				if(data.valid == 'exist'){
+					alert('Factor already exists for this hobby');
+					$('#factor').val('');
+				}
+			}
+		})
+	    })
+	})
+</script>
+
+	<div class="card-title">Hobby Factors</div>
+        <hr>
+	<form method='post' action="{% url 'addHobbyFactorAction' %}">
+	{% csrf_token %}
+		<div class="form-group">
+            		<label for="hobby">Hobby</label>
+			<select class="form-control" id='hobby' name='hobby'>
+				<option value=''>--hobby--</option>
+				{% for v in data%}
+					<option value='{{v.id}}'>{{v.hobby}}</option>
+				{% endfor %}
+			</select>
+           	</div>
+		<div class="form-group">
+            		<label for="factor">Factor</label>
+			<input type='text' class="form-control" id='factor' name='factor'>
+           	</div>
+		<div class="form-group">
+            		<input type="submit" class="btn btn-light px-5" value='ADD' onclick='return validation()'>
+          	</div>
+	</form>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------>
+	
+		<!--<form method='post' action="{% url 'addHobbyFactorAction' %}">
+		{% csrf_token %}
+			<table>
+				<tr>
+					<td>Hobby:</td>
+					<td>
+						<select id='hobby' name='hobby'>
+							<option value=''>--select hobby--</option>
+							{% for v in data %}
+								<option value='{{v.id}}'>{{v.hobby}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Factor Name:</td>
+					<td><input type='text' name='factor' id='factor' /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type='submit' value='ADD' onclick='return validation()' /></td>
+				</tr>
+			</table>
+		</form>-->
+	
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}

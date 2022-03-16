@@ -1,0 +1,141 @@
+{% extends 'base_register.html' %}
+{% block content %}
+<script src="/static/jquery-1.8.3.min.js" type='text/javascript'></script>
+
+<script type='text/javascript'>
+	function validation(){
+		var userType=document.loginForm.userType;
+		var username=document.getElementById('username');
+		var password=document.getElementById('password');
+		var secQstn=document.getElementById('secQstn');
+		var secAns=document.getElementById('secAns');
+
+		if(userType[0].checked == false && userType[1].checked == false){
+			alert('Select your user type');
+			return false;
+		}else if(username.value.length == 0){
+			alert('Enter Your Username');
+			username.focus();
+			return false;
+		}else if(password.value.length == 0){
+			alert('Enter Your Password');
+			password.focus();
+			return false;
+		}
+		if(userType.value == 'user'){
+			if(secQstn.value.length == 0){
+				alert('Please Select Your Security Question')
+				secQstn.focus();
+				return false;
+			}else if(secAns.value.length == 0){
+				alert('Please Enter Your Security Answer');
+				secAns.focus();
+				return false;
+			}
+		}
+	}
+	
+</script>
+<script>
+	$(document).ready(function(){
+		$('.security').hide();
+		$('.userType').change(function(){
+			userType=$(this).val();
+			console.log(userType);
+			if(userType == 'admin'){
+				$('.security').hide();
+			}else{
+				$('.security').show();
+			}
+		})
+	})
+</script>
+
+	<div class="card-title text-uppercase text-center py-3">Login</div>
+	<form method='post' action="{% url 'loginAction' %}" name='loginForm'>
+	{% csrf_token %}
+		<div class="form-group">
+			<label for="userType" class="">User Type: </label>
+			<div class="position-relative has-icon-right" style="display:inline">
+				<input type="radio" class="userType" name="userType" value='admin' class="" >Admin
+				<input type="radio" class="userType" name="userType" value='user' class="" >User
+			</div>
+		</div>
+		<div class="form-group loginDetails">
+			<label for="username" class="sr-only">Username</label>
+			<div class="position-relative has-icon-right">
+				<input type='text' id='username' name='username' class="form-control input-shadow" placeholder="Enter Your Userame" />
+				<div class="form-control-position">
+					<i class="icon-user"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group loginDetails">
+			<label for="password" class="sr-only">Password</label>
+			<div class="position-relative has-icon-right">
+				<input type="password" id="password" name='password' class="form-control input-shadow" placeholder="Enter Your Password">
+				<div class="form-control-position">
+					<i class="icon-lock"></i>
+				</div>
+			</div>
+		</div>
+		<div class="form-group security">
+			<label for="secQstn" class="sr-only">Security Question</label>
+			<div class="position-relative has-icon-right">
+				<select name='secQstn' id='secQstn' class="form-control input-shadow">
+					<option value="">--Select a Security Question--</option>
+					<option value="What is your pet's name?">What is your pet's name?</option>
+					<option value="What is your favourite color?">What is your favourite color?</option>
+					<option value="What is your favourite subject?">What is your favourite subject?</option>
+					<option value="What is your English teacher's name?">What is your English teacher's name?</option>
+				</select>
+			</div>
+		</div>	
+		<div class="form-group security">
+			<label for="secAns" class="sr-only">Security Answer</label>
+			<div class="position-relative has-icon-right">
+				<input type='text' id='secAns' name='secAns' class="form-control input-shadow" placeholder="Enter Your Security Answer" />
+			</div>
+		</div>	
+		<input type='submit' class='submitButton btn btn-light btn-block waves-effect waves-light' value='Login' onclick='return validation()' />		  
+	</form>
+	<a href="{% url 'forgotPassword' %}">Forgot Password</a>
+	<div class="card-footer text-center py-3">
+		<p class="text-warning mb-0">Do not have an account? <a href="{% url 'register' %}"> Sign Up here</a></p>
+	</div>
+<!--------------------------------------------------------------------------------------------------------------------->
+		
+	<!--<h3><u>Login</u></h3>
+		<form method='post' action="{% url 'loginAction' %}" name='loginForm'>
+		{% csrf_token %}
+			<p>
+				<label>User Type:</label>
+				<input type='radio' class='userType' name='userType' value='admin' />Admin
+				<input type='radio' class='userType' name='userType' value='user' />User
+			</p>
+			<p class='loginDetails'>
+				<input type='text' id='username' name='username' placeholder='Username' />
+				<input type='password' id='password' name='password' placeholder='Password' />
+			</p>
+			<p class='security'>
+				<select name='secQstn' id='secQstn'>
+					<option value="">--select a question--</option>
+					<option value="What is your pet's name?">What is your pet's name?</option>
+					<option value="What is your favourite color?">What is your favourite color?</option>
+					<option value="What is your favourite subject?">What is your favourite subject?</option>
+					<option value="What is your English teacher's name?">What is your English teacher's name?</option>
+				</select>
+				<input type='text' name='secAns' id='secAns' placeholder='Security Answer' />
+			</p>
+			<input type='submit' class='submitButton' value='Login' onclick='return validation()' />
+		</form>
+		<a href="{% url 'forgotPassword' %}">Forgot Password</a>-->
+
+	{% if messages %}
+		{% for msg in messages %}
+			<script>
+				alert('{{msg}}')
+			</script>
+		{% endfor %}
+	{% endif %}
+{% endblock %}
